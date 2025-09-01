@@ -55,11 +55,11 @@ INSTALLED_APPS = [
     # Serve UI pages
     "apps.pages",
 
-    # Dynamic DT
-    "apps.dyn_dt",
+    # Dynamic DT - Disabled due to import issues
+    # "apps.dyn_dt",
 
-    # Dynamic API
-    "apps.dyn_api",
+    # Dynamic API - Disabled for CRM focus
+    # "apps.dyn_api",
 
     # Charts
     "apps.charts",
@@ -242,18 +242,18 @@ EMAIL_TIMEOUT = 20  # seconds
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 
-# ### DYNAMIC_DATATB Settings ###
-DYNAMIC_DATATB = {
-    # SLUG -> Import_PATH 
-    'product'  : "apps.pages.models.Product",
-}
+# ### DYNAMIC_DATATB Settings - Disabled ###
+# DYNAMIC_DATATB = {
+#     # SLUG -> Import_PATH 
+#     'product'  : "apps.pages.models.Product",
+# }
 ########################################
 
-# Syntax: URI -> Import_PATH
-DYNAMIC_API = {
-    # SLUG -> Import_PATH 
-    'product'  : "apps.pages.models.Product",
-}
+# Syntax: URI -> Import_PATH - Disabled
+# DYNAMIC_API = {
+#     # SLUG -> Import_PATH 
+#     'product'  : "apps.pages.models.Product",
+# }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

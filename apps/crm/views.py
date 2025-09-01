@@ -343,12 +343,32 @@ def payment_installment_create(request):
                 }
                 return render(request, 'crm/payments/installment_form.html', context)
             
+            # Convert due_date string to date object
+            from datetime import datetime
+            due_date_obj = None
+            if due_date:
+                try:
+                    due_date_obj = datetime.strptime(due_date, '%Y-%m-%d').date()
+                except ValueError:
+                    messages.error(request, 'Invalid due date format. Please use YYYY-MM-DD format.')
+                    context = {
+                        'segment': 'payment_installments',
+                        'projects': Project.objects.all(),
+                        'payment_types': PaymentInstallment.PAYMENT_TYPE_CHOICES,
+                        'selected_project': project,
+                        'project_budget': project.budget or 0,
+                        'total_paid': total_paid,
+                        'remaining_amount': remaining_amount,
+                        'entered_amount': amount,
+                    }
+                    return render(request, 'crm/payments/installment_form.html', context)
+            
             installment = PaymentInstallment.objects.create(
                 project_id=project_id,
                 title=title,
                 amount=amount,
                 payment_type=payment_type,
-                due_date=due_date,
+                due_date=due_date_obj,
                 notes=notes,
                 created_by=request.user
             )
@@ -415,9 +435,25 @@ def payment_installment_edit(request, installment_id):
         try:
             installment.project_id = request.POST.get('project')
             installment.title = request.POST.get('title')
-            installment.amount = request.POST.get('amount')
+            installment.amount = float(request.POST.get('amount'))
             installment.payment_type = request.POST.get('payment_type')
-            installment.due_date = request.POST.get('due_date')
+            
+            # Convert due_date string to date object
+            due_date_str = request.POST.get('due_date')
+            if due_date_str:
+                from datetime import datetime
+                try:
+                    installment.due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    messages.error(request, 'Invalid due date format. Please use YYYY-MM-DD format.')
+                    context = {
+                        'segment': 'payment_installments',
+                        'installment': installment,
+                        'projects': Project.objects.all(),
+                        'payment_types': PaymentInstallment.PAYMENT_TYPE_CHOICES,
+                    }
+                    return render(request, 'crm/payments/installment_form.html', context)
+            
             installment.notes = request.POST.get('notes')
             installment.save()
             
@@ -443,9 +479,22 @@ def payment_installment_mark_paid(request, installment_id):
     
     if request.method == 'POST':
         try:
-            paid_date = request.POST.get('paid_date')
-            if not paid_date:
+            paid_date_str = request.POST.get('paid_date')
+            if not paid_date_str:
                 paid_date = timezone.now().date()
+            else:
+                # Convert paid_date string to date object
+                from datetime import datetime
+                try:
+                    paid_date = datetime.strptime(paid_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    messages.error(request, 'Invalid paid date format. Please use YYYY-MM-DD format.')
+                    context = {
+                        'segment': 'payment_installments',
+                        'installment': installment,
+                        'today': timezone.now().date(),
+                    }
+                    return render(request, 'crm/payments/mark_paid_form.html', context)
             
             # Update the installment
             installment.status = 'paid'

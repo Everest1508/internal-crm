@@ -20,8 +20,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('apps.pages.urls')),
-    path('', include('apps.dyn_dt.urls')),
-    path('', include('apps.dyn_api.urls')),
+    # path('', include('apps.dyn_dt.urls')),  # Disabled - causing import issues
+    # path('', include('apps.dyn_api.urls')),  # Disabled - not needed for CRM
     path('charts/', include('apps.charts.urls')),
     path('api/', include('apps.api.urls')),  # CRM API endpoints
     path('crm/', include('apps.crm.urls')),  # CRM views

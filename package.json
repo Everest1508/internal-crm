@@ -1,18 +1,19 @@
 {
-  "name": "appseed-generic",
+  "name": "crm-dashboard-django",
   "version": "1.0.0",
-  "description": "Generic tooling by AppSeed",
+  "description": "CRM Dashboard Django - Business Management Platform",
   "main": "gulpfile.js",
-  "author": "AppSeed",
+  "author": "CRM Team",
   "keywords": [
-      "css",
-      "sass",
-      "gulp",
-      "web"
+      "crm",
+      "django",
+      "business",
+      "management",
+      "dashboard"
   ],
-  "homepage": "https://appseed.us",
+  "homepage": "https://github.com/your-org/crm-dashboard-django",
   "bugs": {
-      "email": "support@appseed.us"
+      "email": "support@your-domain.com"
   },
   "license": "MIT License",
   "devDependencies": {

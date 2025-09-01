@@ -1,0 +1,98 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %} Payment Installments {% endblock title %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Payment Installments</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a class="btn bg-gradient-primary btn-sm mb-0" href="/crm/payments/create/">
+                  <i class="fas fa-plus"></i>&nbsp;&nbsp;Add Payment Installment
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Client</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Amount</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Due Date</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for installment in installments %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ installment.project.title }}</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ installment.project.client.name }}</p>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">₹{{ installment.amount }}</p>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ installment.due_date|date:"M d, Y" }}</p>
+                    </td>
+                    <td>
+                      {% if installment.status == 'paid' %}
+                        <span class="badge badge-sm bg-gradient-success">Paid</span>
+                      {% elif installment.status == 'overdue' %}
+                        <span class="badge badge-sm bg-gradient-danger">Overdue</span>
+                      {% elif installment.is_overdue %}
+                        <span class="badge badge-sm bg-gradient-danger">Overdue</span>
+                      {% else %}
+                        <span class="badge badge-sm bg-gradient-warning">Pending</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <a href="/crm/payments/{{ installment.id }}/edit/" class="btn btn-link text-secondary px-3 mb-0">
+                          <i class="fas fa-pencil-alt text-xs me-1"></i>Edit
+                        </a>
+                        {% if installment.status != 'paid' %}
+                        <a href="/crm/payments/{{ installment.id }}/mark-paid/" class="btn btn-link text-success px-3 mb-0">
+                          <i class="fas fa-check text-xs me-1"></i>Mark Paid
+                        </a>
+                        {% endif %}
+                        <a href="/crm/payments/{{ installment.id }}/delete/" class="btn btn-link text-danger px-3 mb-0">
+                          <i class="fas fa-trash text-xs me-1"></i>Delete
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center py-4">
+                      <p class="text-sm text-secondary mb-0">No payment installments found.</p>
+                      <a href="/crm/payments/create/" class="btn btn-sm bg-gradient-primary mt-2">Create First Installment</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

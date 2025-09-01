@@ -1,0 +1,153 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Send Custom Email {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Send Email Using Custom SMTP</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="{% url 'crm:smtp_config_list' %}" class="btn btn-secondary btn-sm">
+                  <i class="fas fa-cog me-2"></i>Manage SMTP Configs
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            {% if configs %}
+              <form method="post">
+                {% csrf_token %}
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="smtp_config" class="form-control-label">SMTP Configuration</label>
+                      <select class="form-control" id="smtp_config" name="smtp_config" required>
+                        <option value="">Select SMTP Configuration</option>
+                        {% for config in configs %}
+                          <option value="{{ config.id }}">
+                            {{ config.name }} ({{ config.smtp_host }}:{{ config.smtp_port }})
+                          </option>
+                        {% endfor %}
+                      </select>
+                      <small class="form-text text-muted">Choose which SMTP configuration to use for sending</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="recipient_email" class="form-control-label">Recipient Email</label>
+                      <input type="email" class="form-control" id="recipient_email" name="recipient_email" 
+                             required placeholder="recipient@example.com">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="subject" class="form-control-label">Subject</label>
+                      <input type="text" class="form-control" id="subject" name="subject" 
+                             required placeholder="Email subject">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="message" class="form-control-label">Plain Text Message</label>
+                      <textarea class="form-control" id="message" name="message" rows="6" 
+                                required placeholder="Enter your message in plain text..."></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="html_message" class="form-control-label">HTML Message (Optional)</label>
+                      <textarea class="form-control" id="html_message" name="html_message" rows="6" 
+                                placeholder="Enter your message in HTML format..."></textarea>
+                      <small class="form-text text-muted">Leave empty if you only want plain text</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-paper-plane me-2"></i>Send Email
+                    </button>
+                    <a href="{% url 'crm:email_logs' %}" class="btn btn-info ms-2">
+                      <i class="fas fa-list me-2"></i>View Email Logs
+                    </a>
+                  </div>
+                </div>
+              </form>
+            {% else %}
+              <div class="text-center py-4">
+                <i class="ni ni-email-83 text-secondary text-gradient text-lg opacity-10 mb-3" style="font-size: 3rem;"></i>
+                <h6 class="text-secondary mb-2">No SMTP configurations available</h6>
+                <p class="text-secondary mb-3">You need to create an SMTP configuration before you can send emails</p>
+                <a href="{% url 'crm:smtp_config_create' %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-plus me-2"></i>Create SMTP Configuration
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Tips -->
+    {% if configs %}
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">Email Sending Tips</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <h6 class="text-primary">Best Practices</h6>
+                  <ul class="list-unstyled">
+                    <li>✓ Use clear, descriptive subjects</li>
+                    <li>✓ Keep messages concise and professional</li>
+                    <li>✓ Test with your own email first</li>
+                    <li>✓ Check spam folder if emails don't arrive</li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <h6 class="text-primary">Troubleshooting</h6>
+                  <ul class="list-unstyled">
+                    <li>• Verify SMTP credentials are correct</li>
+                    <li>• Check if 2FA requires app password</li>
+                    <li>• Ensure port and security settings match</li>
+                    <li>• Check email logs for error details</li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <h6 class="text-primary">Security Notes</h6>
+                  <ul class="list-unstyled">
+                    <li>🔒 Passwords are encrypted in database</li>
+                    <li>🔒 Use app passwords for 2FA accounts</li>
+                    <li>🔒 TLS/SSL encryption is recommended</li>
+                    <li>🔒 Regular password updates advised</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock content %}
+
+

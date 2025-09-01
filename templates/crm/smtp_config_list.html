@@ -1,0 +1,111 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} SMTP Configurations {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Custom SMTP Configurations</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="{% url 'crm:smtp_config_create' %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-plus me-2"></i>Add SMTP Config
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            {% if configs %}
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Configuration</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">SMTP Server</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">From Email</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Security</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for config in configs %}
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ config.name }}</h6>
+                            <p class="text-xs text-secondary mb-0">Created: {{ config.created_at|date:"M d, Y" }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{ config.smtp_host }}:{{ config.smtp_port }}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs text-secondary mb-0">{{ config.username }}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs text-secondary mb-0">{{ config.from_email }}</p>
+                      </td>
+                      <td>
+                        {% if config.is_active %}
+                          <span class="badge badge-sm bg-gradient-success">Active</span>
+                        {% else %}
+                          <span class="badge badge-sm bg-gradient-secondary">Inactive</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <div class="d-flex flex-column">
+                          {% if config.use_tls %}
+                            <span class="badge badge-sm bg-gradient-info">TLS</span>
+                          {% endif %}
+                          {% if config.use_ssl %}
+                            <span class="badge badge-sm bg-gradient-warning">SSL</span>
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td class="align-middle">
+                        <div class="btn-group" role="group">
+                          <a href="{% url 'crm:test_smtp_connection' config.id %}" class="btn btn-info btn-xs" title="Test Connection">
+                            <i class="fas fa-plug"></i>
+                          </a>
+                          <a href="{% url 'crm:smtp_config_edit' config.id %}" class="btn btn-warning btn-xs" title="Edit">
+                            <i class="fas fa-edit"></i>
+                          </a>
+                          <a href="{% url 'crm:smtp_config_delete' config.id %}" class="btn btn-danger btn-xs" title="Delete">
+                            <i class="fas fa-trash"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-center py-4">
+                <i class="ni ni-email-83 text-secondary text-gradient text-lg opacity-10 mb-3" style="font-size: 3rem;"></i>
+                <h6 class="text-secondary mb-2">No SMTP configurations yet</h6>
+                <p class="text-secondary mb-3">Start by creating your first SMTP configuration</p>
+                <a href="{% url 'crm:smtp_config_create' %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-plus me-2"></i>Create SMTP Config
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

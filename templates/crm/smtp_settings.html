@@ -1,0 +1,212 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} SMTP Configuration {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>SMTP Email Configuration</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="/crm/test-email/" class="btn btn-primary btn-sm">
+                  <i class="fas fa-paper-plane me-2"></i>Test Email
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            
+            <!-- Configuration Status -->
+            <div class="alert alert-{{ config_class }} alert-dismissible fade show" role="alert">
+              <h6 class="alert-heading">
+                <i class="fas fa-info-circle me-2"></i>Current Status: {{ config_status }}
+              </h6>
+              <p class="mb-0">
+                {% if config_class == 'success' %}
+                  Your SMTP configuration is active and ready to send emails.
+                {% elif config_class == 'warning' %}
+                  Email is configured for development (emails will be printed to console).
+                {% elif config_class == 'info' %}
+                  Email is configured for development (emails will be saved as files).
+                {% else %}
+                  Email configuration is not set up. Please configure SMTP settings.
+                {% endif %}
+              </p>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-8">
+                <!-- Current Configuration -->
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="mb-0">Current Email Configuration</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-borderless">
+                        <tbody>
+                          <tr>
+                            <td><strong>Email Backend:</strong></td>
+                            <td><code>{{ email_config.EMAIL_BACKEND }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>SMTP Host:</strong></td>
+                            <td><code>{{ email_config.EMAIL_HOST }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>SMTP Port:</strong></td>
+                            <td><code>{{ email_config.EMAIL_PORT }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>Use TLS:</strong></td>
+                            <td><code>{{ email_config.EMAIL_USE_TLS }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>Use SSL:</strong></td>
+                            <td><code>{{ email_config.EMAIL_USE_SSL }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>Username:</strong></td>
+                            <td><code>{{ email_config.EMAIL_HOST_USER }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>Password:</strong></td>
+                            <td><code>{{ email_config.EMAIL_HOST_PASSWORD }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>From Email:</strong></td>
+                            <td><code>{{ email_config.DEFAULT_FROM_EMAIL }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>Server Email:</strong></td>
+                            <td><code>{{ email_config.SERVER_EMAIL }}</code></td>
+                          </tr>
+                          <tr>
+                            <td><strong>Timeout:</strong></td>
+                            <td><code>{{ email_config.EMAIL_TIMEOUT }}</code></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Quick Setup Guide -->
+                <div class="card mt-4">
+                  <div class="card-header">
+                    <h6 class="mb-0">Quick Setup Guide</h6>
+                  </div>
+                  <div class="card-body">
+                    <h6>1. Choose Your Email Provider</h6>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="card bg-light">
+                          <div class="card-body">
+                            <h6 class="card-title">Gmail</h6>
+                            <p class="card-text small">Good for personal/small business use</p>
+                            <ul class="list-unstyled small">
+                              <li>Host: smtp.gmail.com</li>
+                              <li>Port: 587</li>
+                              <li>TLS: Yes</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="card bg-light">
+                          <div class="card-body">
+                            <h6 class="card-title">Outlook</h6>
+                            <p class="card-text small">Good for business accounts</p>
+                            <ul class="list-unstyled small">
+                              <li>Host: smtp.outlook.com</li>
+                              <li>Port: 587</li>
+                              <li>TLS: Yes</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <h6 class="mt-3">2. Configure Settings</h6>
+                    <p class="text-muted">Edit <code>config/settings.py</code> and uncomment the appropriate SMTP configuration:</p>
+                    <pre class="bg-light p-3 rounded"><code># Uncomment for production SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'
+EMAIL_HOST_PASSWORD = 'your-app-password'</code></pre>
+                    
+                    <h6 class="mt-3">3. Test Configuration</h6>
+                    <p class="text-muted">Use the "Test Email" button above to verify your setup.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <!-- Quick Actions -->
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="mb-0">Quick Actions</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-grid gap-2">
+                      <a href="/crm/test-email/" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Test Email
+                      </a>
+                      <a href="/admin/" target="_blank" class="btn btn-outline-secondary">
+                        <i class="fas fa-cog me-2"></i>Admin Panel
+                      </a>
+                      <a href="/EMAIL_SETUP.md" target="_blank" class="btn btn-outline-info">
+                        <i class="fas fa-book me-2"></i>Setup Guide
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Security Tips -->
+                <div class="card mt-3">
+                  <div class="card-header">
+                    <h6 class="mb-0">Security Tips</h6>
+                  </div>
+                  <div class="card-body">
+                    <ul class="list-unstyled small">
+                      <li class="mb-2"><i class="fas fa-shield-alt text-success me-2"></i>Use App Passwords for Gmail</li>
+                      <li class="mb-2"><i class="fas fa-shield-alt text-success me-2"></i>Enable 2FA on your email</li>
+                      <li class="mb-2"><i class="fas fa-shield-alt text-success me-2"></i>Use TLS encryption (port 587)</li>
+                      <li><i class="fas fa-shield-alt text-success me-2"></i>Never hardcode passwords</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <!-- Troubleshooting -->
+                <div class="card mt-3">
+                  <div class="card-header">
+                    <h6 class="mb-0">Common Issues</h6>
+                  </div>
+                  <div class="card-body">
+                    <ul class="list-unstyled small">
+                      <li class="mb-2"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Authentication failed</li>
+                      <li class="mb-2"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Connection refused</li>
+                      <li class="mb-2"><i class="fas fa-exclamation-triangle text-warning me-2"></i>TLS/SSL issues</li>
+                      <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>Firewall blocking</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

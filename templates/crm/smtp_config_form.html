@@ -1,0 +1,200 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} 
+  {% if config %}Edit SMTP Configuration{% else %}Create SMTP Configuration{% endif %}
+{% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>
+                  {% if config %}
+                    Edit SMTP Configuration: {{ config.name }}
+                  {% else %}
+                    Create New SMTP Configuration
+                  {% endif %}
+                </h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="{% url 'crm:smtp_config_list' %}" class="btn btn-secondary btn-sm">
+                  <i class="fas fa-arrow-left me-2"></i>Back to Configs
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="name" class="form-control-label">Configuration Name</label>
+                    <input type="text" class="form-control" id="name" name="name" 
+                           value="{{ config.name|default:'' }}" required
+                           placeholder="e.g., Gmail, Outlook, Custom SMTP">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="from_email" class="form-control-label">From Email Address</label>
+                    <input type="email" class="form-control" id="from_email" name="from_email" 
+                           value="{{ config.from_email|default:'' }}" required
+                           placeholder="your-email@domain.com">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="smtp_host" class="form-control-label">SMTP Host</label>
+                    <input type="text" class="form-control" id="smtp_host" name="smtp_host" 
+                           value="{{ config.smtp_host|default:'' }}" required
+                           placeholder="e.g., smtp.gmail.com, smtp.office365.com">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="smtp_port" class="form-control-label">SMTP Port</label>
+                    <input type="number" class="form-control" id="smtp_port" name="smtp_port" 
+                           value="{{ config.smtp_port|default:587 }}" required
+                           placeholder="587, 465, 25">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="username" class="form-control-label">Username/Email</label>
+                    <input type="text" class="form-control" id="username" name="username" 
+                           value="{{ config.username|default:'' }}" required
+                           placeholder="your-email@domain.com">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="password" class="form-control-label">Password/App Password</label>
+                    <input type="password" class="form-control" id="password" name="password" 
+                           value="{{ config.password|default:'' }}" required
+                           placeholder="Your email password or app password">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="use_tls" name="use_tls" 
+                             {% if config.use_tls or not config %}checked{% endif %}>
+                      <label class="form-check-label" for="use_tls">
+                        Use TLS Encryption
+                      </label>
+                    </div>
+                    <small class="form-text text-muted">Recommended for most modern SMTP servers</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="use_ssl" name="use_ssl" 
+                             {% if config.use_ssl %}checked{% endif %}>
+                      <label class="form-check-label" for="use_ssl">
+                        Use SSL Encryption
+                      </label>
+                    </div>
+                    <small class="form-text text-muted">Use this if your server requires SSL (port 465)</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                             {% if config.is_active or not config %}checked{% endif %}>
+                      <label class="form-check-label" for="is_active">
+                        Active Configuration
+                      </label>
+                    </div>
+                    <small class="form-text text-muted">Only one configuration should be active at a time</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">
+                    {% if config %}
+                      <i class="fas fa-save me-2"></i>Update Configuration
+                    {% else %}
+                      <i class="fas fa-plus me-2"></i>Create Configuration
+                    {% endif %}
+                  </button>
+                  <a href="{% url 'crm:smtp_config_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Setup Guide -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h6 class="mb-0">Quick Setup Guide</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <h6 class="text-primary">Gmail</h6>
+                <ul class="list-unstyled">
+                  <li><strong>Host:</strong> smtp.gmail.com</li>
+                  <li><strong>Port:</strong> 587</li>
+                  <li><strong>TLS:</strong> Enabled</li>
+                  <li><strong>SSL:</strong> Disabled</li>
+                  <li><strong>Note:</strong> Use App Password, not regular password</li>
+                </ul>
+              </div>
+              <div class="col-md-4">
+                <h6 class="text-primary">Outlook/Office365</h6>
+                <ul class="list-unstyled">
+                  <li><strong>Host:</strong> smtp.office365.com</li>
+                  <li><strong>Port:</strong> 587</li>
+                  <li><strong>TLS:</strong> Enabled</li>
+                  <li><strong>SSL:</strong> Disabled</li>
+                  <li><strong>Note:</strong> Use App Password for 2FA accounts</li>
+                </ul>
+              </div>
+              <div class="col-md-4">
+                <h6 class="text-primary">Custom SMTP</h6>
+                <ul class="list-unstyled">
+                  <li><strong>Host:</strong> Your SMTP server</li>
+                  <li><strong>Port:</strong> Usually 587 or 465</li>
+                  <li><strong>TLS:</strong> Usually enabled</li>
+                  <li><strong>SSL:</strong> Depends on server</li>
+                  <li><strong>Note:</strong> Check with your hosting provider</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

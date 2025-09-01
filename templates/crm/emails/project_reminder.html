@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Deadline Reminder</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #fff3cd; padding: 20px; border: 1px solid #ffeaa7; border-radius: 5px; margin-bottom: 20px; }
+        .content { background: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 20px; }
+        .project-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .urgent { color: #dc3545; font-weight: bold; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        .footer { text-align: center; margin-top: 30px; color: #6c757d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2 style="margin: 0; color: #856404;">⚠️ Project Deadline Reminder</h2>
+            <p style="margin: 5px 0 0 0; color: #856404;">Action required: Project due soon</p>
+        </div>
+        
+        <div class="content">
+            <h3>Dear {{ project.assigned_to.get_full_name|default:project.assigned_to.username }},</h3>
+            
+            <p>This is a <strong>reminder</strong> that the project <strong>"{{ project.title }}"</strong> is due soon.</p>
+            
+            <div class="project-info">
+                <h4 style="margin-top: 0;">Project Details:</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li><strong>Title:</strong> {{ project.title }}</li>
+                    <li><strong>Client:</strong> {{ project.client.name }}</li>
+                    <li><strong>Due Date:</strong> {{ project.due_date|date:"M d, Y" }}</li>
+                    <li><strong>Days Until Due:</strong> 
+                        <span class="urgent">{{ days_until_due }}</span>
+                    </li>
+                    <li><strong>Current Status:</strong> {{ project.get_status_display }}</li>
+                    <li><strong>Progress:</strong> {{ project.progress|default:0 }}%</li>
+                </ul>
+            </div>
+            
+            {% if project.description %}
+            <h4>Description:</h4>
+            <p>{{ project.description }}</p>
+            {% endif %}
+            
+            <p><strong>Please review the project status and take necessary actions to ensure timely completion.</strong></p>
+            
+            <p style="margin-top: 20px;">
+                <a href="{{ project_url }}" class="btn">View Project</a>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>Best regards,<br>CRM System</p>
+        </div>
+    </div>
+</body>
+</html>
+
+

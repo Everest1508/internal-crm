@@ -1,0 +1,20 @@
+Welcome to {{ site_name }}!
+
+Dear {{ client.name }},
+
+Welcome to {{ site_name }}! We're excited to have you as a client.
+
+Client Information:
+- Name: {{ client.name }}
+- Company: {{ client.company_name|default:"Not specified" }}
+- Email: {{ client.email }}
+- Phone: {{ client.phone|default:"Not specified" }}
+
+We look forward to working with you and delivering exceptional results for your projects.
+
+If you have any questions or need assistance, please don't hesitate to contact us.
+
+Best regards,
+The {{ site_name }} Team
+
+

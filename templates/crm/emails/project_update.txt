@@ -1,0 +1,21 @@
+Project Update: {{ project.title }}
+
+Dear Team,
+
+The project "{{ project.title }}" has been {{ update_type }}.
+
+Project Details:
+- Client: {{ project.client.name }}
+- Status: {{ project.get_status_display }}
+- Due Date: {{ project.due_date|date:"M d, Y" }}
+- Assigned To: {{ project.assigned_to.get_full_name|default:project.assigned_to.username }}
+
+{% if project.description %}
+Description: {{ project.description }}
+{% endif %}
+
+View Project: {{ project_url }}
+
+Best regards,
+CRM System
+

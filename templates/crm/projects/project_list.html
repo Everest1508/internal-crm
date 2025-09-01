@@ -1,0 +1,96 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Projects {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Projects</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="{% url 'crm:project_create' %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-plus"></i> Add Project
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Client</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Priority</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Budget</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Due Date</th>
+                    <th class="text-secondary opacity-7"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for project in projects %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ project.title }}</h6>
+                          <p class="text-xs text-secondary mb-0">{{ project.description|truncatewords:10 }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ project.client.name }}</p>
+                    </td>
+                    <td>
+                      <span class="badge badge-sm bg-gradient-{{ project.status|yesno:'success,warning' }}">
+                        {{ project.get_status_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge badge-sm bg-gradient-{{ project.priority|yesno:'success,warning' }}">
+                        {{ project.get_priority_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">
+                        {% if project.budget %}
+                          ₹{{ project.budget|floatformat:2 }}
+                        {% else %}
+                          <span class="text-muted">Not set</span>
+                        {% endif %}
+                      </p>
+                    </td>
+                    <td>
+                      <p class="text-xs text-secondary mb-0">{{ project.due_date|date:"M d, Y" }}</p>
+                    </td>
+                    <td class="align-middle">
+                      <a href="{% url 'crm:project_detail' project.id %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="View project">
+                        View
+                      </a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="7" class="text-center py-4">
+                      <p class="text-secondary mb-0">No projects found.</p>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+

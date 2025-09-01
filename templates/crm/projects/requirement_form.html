@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Add Requirement - {{ project.title }} {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Add Requirement to "{{ project.title }}"</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="/crm/projects/{{ project.id }}/" class="btn btn-secondary btn-sm">
+                  <i class="fas fa-arrow-left"></i> Back to Project
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label for="title" class="form-control-label">Requirement Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                  </div>
+                  
+                  <div class="form-group mt-3">
+                    <label for="description" class="form-control-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                  </div>
+                  
+                  <div class="form-group mt-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="is_completed" name="is_completed" value="true">
+                      <label class="form-check-label" for="is_completed">
+                        Mark as completed
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-plus me-2"></i>Add Requirement
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <div class="card bg-light">
+                    <div class="card-body">
+                      <h6>Project Info</h6>
+                      <p><strong>Title:</strong> {{ project.title }}</p>
+                      <p><strong>Client:</strong> {{ project.client.name }}</p>
+                      <p><strong>Status:</strong> {{ project.get_status_display }}</p>
+                      <p><strong>Due Date:</strong> {{ project.due_date|date:"M d, Y" }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

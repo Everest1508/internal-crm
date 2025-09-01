@@ -1,0 +1,179 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Email Logs {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Email Logs</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="{% url 'crm:send_custom_email' %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-paper-plane me-2"></i>Send New Email
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            {% if logs %}
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email Details</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Recipient</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">SMTP Config</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sent At</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sent By</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for log in logs %}
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ log.subject }}</h6>
+                            <p class="text-xs text-secondary mb-0">
+                              {{ log.message|truncatechars:50 }}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{ log.recipient }}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs text-secondary mb-0">{{ log.smtp_config.name }}</p>
+                        <p class="text-xs text-secondary mb-0">{{ log.smtp_config.smtp_host }}:{{ log.smtp_config.smtp_port }}</p>
+                      </td>
+                      <td>
+                        {% if log.status == 'sent' %}
+                          <span class="badge badge-sm bg-gradient-success">Sent</span>
+                        {% elif log.status == 'failed' %}
+                          <span class="badge badge-sm bg-gradient-danger">Failed</span>
+                        {% else %}
+                          <span class="badge badge-sm bg-gradient-warning">Pending</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <p class="text-xs text-secondary mb-0">{{ log.sent_at|date:"M d, Y H:i" }}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs text-secondary mb-0">{{ log.sent_by.username }}</p>
+                      </td>
+                      <td class="align-middle">
+                        {% if log.status == 'failed' and log.error_message %}
+                          <button class="btn btn-info btn-xs" type="button" 
+                                  data-bs-toggle="modal" 
+                                  data-bs-target="#errorModal{{ log.id }}" 
+                                  title="View Error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                          </button>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    
+                    <!-- Error Modal for Failed Emails -->
+                    {% if log.status == 'failed' and log.error_message %}
+                      <div class="modal fade" id="errorModal{{ log.id }}" tabindex="-1" aria-labelledby="errorModalLabel{{ log.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="errorModalLabel{{ log.id }}">Email Error Details</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <h6>Email Details:</h6>
+                              <p><strong>Subject:</strong> {{ log.subject }}</p>
+                              <p><strong>Recipient:</strong> {{ log.recipient }}</p>
+                              <p><strong>SMTP Config:</strong> {{ log.smtp_config.name }}</p>
+                              <hr>
+                              <h6>Error Message:</h6>
+                              <div class="alert alert-danger">
+                                {{ log.error_message }}
+                              </div>
+                              <h6>Message Content:</h6>
+                              <div class="border p-2 bg-light">
+                                {{ log.message|linebreaks }}
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-center py-4">
+                <i class="ni ni-email-83 text-secondary text-gradient text-lg opacity-10 mb-3" style="font-size: 3rem;"></i>
+                <h6 class="text-secondary mb-2">No email logs yet</h6>
+                <p class="text-secondary mb-3">Start sending emails to see logs here</p>
+                <a href="{% url 'crm:send_custom_email' %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-paper-plane me-2"></i>Send Your First Email
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Statistics -->
+    {% if logs %}
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">Email Statistics</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="text-center">
+                    <h4 class="text-primary mb-0">{{ logs|length }}</h4>
+                    <p class="text-sm text-secondary mb-0">Total Emails</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="text-center">
+                    <h4 class="text-success mb-0">{{ logs|dictsort:"status"|length|default:0 }}</h4>
+                    <p class="text-sm text-secondary mb-0">Successfully Sent</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="text-center">
+                    <h4 class="text-danger mb-0">{{ logs|dictsort:"status"|length|default:0 }}</h4>
+                    <p class="text-sm text-secondary mb-0">Failed</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="text-center">
+                    <h4 class="text-warning mb-0">{{ logs|dictsort:"status"|length|default:0 }}</h4>
+                    <p class="text-sm text-secondary mb-0">Pending</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock content %}
+
+

@@ -1,0 +1,26 @@
+Project Deadline Reminder: {{ project.title }}
+
+Dear {{ project.assigned_to.get_full_name|default:project.assigned_to.username }},
+
+This is a reminder that the project "{{ project.title }}" is due soon.
+
+Project Details:
+- Title: {{ project.title }}
+- Client: {{ project.client.name }}
+- Due Date: {{ project.due_date|date:"M d, Y" }}
+- Days Until Due: {{ days_until_due }}
+- Current Status: {{ project.get_status_display }}
+- Progress: {{ project.progress|default:0 }}%
+
+{% if project.description %}
+Description: {{ project.description }}
+{% endif %}
+
+Please review the project status and take necessary actions to ensure timely completion.
+
+View Project: {{ project_url }}
+
+Best regards,
+CRM System
+
+

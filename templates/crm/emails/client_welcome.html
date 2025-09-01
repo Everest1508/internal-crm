@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{ site_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
+        .content { background: #fff; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; margin-bottom: 20px; }
+        .client-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #6c757d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; color: #495057;">Welcome to {{ site_name }}!</h1>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">We're excited to have you as a client</p>
+        </div>
+        
+        <div class="content">
+            <h2>Dear {{ client.name }},</h2>
+            
+            <p>Welcome to <strong>{{ site_name }}</strong>! We're thrilled to have you as a client and look forward to building a successful partnership together.</p>
+            
+            <div class="client-info">
+                <h3 style="margin-top: 0;">Your Client Information:</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li><strong>Name:</strong> {{ client.name }}</li>
+                    <li><strong>Company:</strong> {{ client.company_name|default:"Not specified" }}</li>
+                    <li><strong>Email:</strong> {{ client.email }}</li>
+                    <li><strong>Phone:</strong> {{ client.phone|default:"Not specified" }}</li>
+                </ul>
+            </div>
+            
+            <p>We're committed to delivering exceptional results for your projects and providing you with the highest level of service and support.</p>
+            
+            <p>If you have any questions, need assistance, or want to discuss your upcoming projects, please don't hesitate to reach out to us.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Best regards,<br><strong>The {{ site_name }} Team</strong></p>
+        </div>
+    </div>
+</body>
+</html>
+
+

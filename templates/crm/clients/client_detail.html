@@ -1,0 +1,75 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} {{ client.name }} {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Client Details</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="{% url 'crm:client_list' %}" class="btn btn-secondary btn-sm">
+                  <i class="fas fa-arrow-left"></i> Back to Clients
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h5>{{ client.name }}</h5>
+                {% if client.company_name %}
+                <p class="text-muted">{{ client.company_name }}</p>
+                {% endif %}
+                
+                <div class="mt-4">
+                  <h6>Contact Information</h6>
+                  <p><strong>Email:</strong> {{ client.email }}</p>
+                  {% if client.phone %}
+                  <p><strong>Phone:</strong> {{ client.phone }}</p>
+                  {% endif %}
+                  <p><strong>Status:</strong> 
+                    <span class="badge badge-sm bg-gradient-{{ client.status|yesno:'success,warning' }}">
+                      {{ client.get_status_display }}
+                    </span>
+                  </p>
+                  <p><strong>Assigned To:</strong> {{ client.assigned_to.get_full_name|default:client.assigned_to.username }}</p>
+                  <p><strong>Created:</strong> {{ client.created_at|date:"M d, Y" }}</p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <h6>Projects ({{ projects.count }})</h6>
+                {% if projects %}
+                <div class="list-group">
+                  {% for project in projects %}
+                  <a href="{% url 'crm:project_detail' project.id %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h6 class="mb-1">{{ project.title }}</h6>
+                      <small class="text-muted">{{ project.get_status_display }}</small>
+                    </div>
+                    <p class="mb-1">{{ project.description|truncatewords:20 }}</p>
+                    <small class="text-muted">Due: {{ project.due_date|date:"M d, Y"|default:"Not set" }}</small>
+                  </a>
+                  {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No projects yet.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

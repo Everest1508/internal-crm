@@ -1,0 +1,89 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Complete Project - {{ project.title }} {% endblock title %}
+
+{% block content %}
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <h6>Complete Project</h6>
+              </div>
+              <div class="col-6 text-end">
+                <a href="/crm/projects/{{ project.id }}/" class="btn btn-secondary btn-sm">
+                  <i class="fas fa-arrow-left"></i> Back to Project
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="alert alert-warning">
+                  <h6><i class="fas fa-exclamation-triangle me-2"></i>Confirm Project Completion</h6>
+                  <p class="mb-0">Are you sure you want to mark the project "<strong>{{ project.title }}</strong>" as completed?</p>
+                </div>
+                
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <h6>Project Details</h6>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <p><strong>Title:</strong> {{ project.title }}</p>
+                        <p><strong>Client:</strong> {{ project.client.name }}</p>
+                        <p><strong>Status:</strong> 
+                          <span class="badge badge-sm bg-{{ project.status|yesno:'success,warning' }}">
+                            {{ project.get_status_display }}
+                          </span>
+                        </p>
+                      </div>
+                      <div class="col-md-6">
+                        <p><strong>Start Date:</strong> {{ project.start_date|date:"M d, Y" }}</p>
+                        <p><strong>Due Date:</strong> {{ project.due_date|date:"M d, Y" }}</p>
+                        <p><strong>Progress:</strong> {{ project.progress|default:0 }}%</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <form method="post" class="mt-4">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-lg">
+                      <i class="fas fa-check me-2"></i>Yes, Mark as Completed
+                    </button>
+                    <a href="/crm/projects/{{ project.id }}/" class="btn btn-secondary btn-lg ms-2">
+                      Cancel
+                    </a>
+                  </div>
+                </form>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card border-success">
+                  <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>What happens when you complete a project?</h6>
+                  </div>
+                  <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Project status changes to "Completed"</li>
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Progress is set to 100%</li>
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Project appears in completed projects list</li>
+                      <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Dashboard statistics are updated</li>
+                      <li><i class="fas fa-check text-success me-2"></i>Project can still be viewed and edited</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
